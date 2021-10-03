@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>quiz.app</title>
+    <style>
+        * {
+            margin: 0 auto;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            /*border: 1px solid rgb(255, 0, 0);*/
+        }
+
+        html {
+            background-color: rgb(197, 197, 197);
+        }
+
+        .box {
+            width: 80%;
+            box-shadow: 2px 2px 3px 1px rgb(0 0 0 / 40%),
+                1px 1px 6px rgb(128 128 128 / 40%);
+            margin-top: 10%;
+            background-color: white;
+            border-radius: 7px;
+        }
+
+        @media(min-width:600px) {
+            .box {
+                width: 65%;
+            }
+
+        }
+
+        @media(max-width:599px) {
+            #sub_msg {
+                font-size: 14px;
+            }
+        }
+
+
+
+        h1 {
+            padding: 40px;
+        }
+
+        .title {
+            text-align: center;
+        }
+
+        .title p {
+            padding: 20px 20px 0 20px;
+        }
+
+        .title_msg {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        #sub_msg {
+            padding: 0 10px;
+        }
+
+        .ques {
+            margin-bottom: 15px;
+            padding: 20px 35px;
+        }
+
+        .check {
+            padding: 5px 0;
+        }
+
+        .check:hover {
+            background-color: rgb(102, 158, 184, .6);
+            transition: all .5s;
+        }
+
+        input[type=radio],
+        #label {
+            cursor: pointer;
+            transform: scale(1.4);
+            padding: 0;
+            margin: 0;
+            line-height: 1;
+        }
+
+        input[type=radio] {
+            margin-left: 7px;
+
+        }
+
+        .submit {
+            border: rgb(0, 89, 255);
+            background-color: rgb(0, 89, 255);
+            color: white;
+            width: 100%;
+            padding: 20px;
+            cursor: pointer;
+            border-radius: 0 0 7px 7px;
+        }
+
+        .submit:hover {
+            background-color: rgba(0, 0, 151, 1);
+        }
+
+        #resultBox {
+            text-align: center;
+            padding: 10px 10px;
+        }
+
+        #result {
+            font-size: 20px;
+            color: royalblue;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="box" id="box">
+        <div class="title" id="title">
+            <p><span class="title_msg" id="title_msg"></span></p><br>
+            <p id="sub_msg"></p>
+        </div>
+        <div class="ques" id="ques">
+            <form name="form">
+                <div class="check">
+                    <input type="radio" name="quiz" id="A" class="check">
+                    <label for="A" id="label"><span id="text0"></span></label>
+                </div>
+                <div class="check">
+                    <input type="radio" name="quiz" id="B" class="check">
+                    <label for="B" id="label"><span id="text1"></span></label>
+                </div>
+                <div class="check">
+                    <input type="radio" name="quiz" id="C" class="check">
+                    <label for="C" id="label"><span id="text2"></span></label>
+                </div>
+                <div class="check">
+                    <input type="radio" name="quiz" id="D" class="check">
+                    <label for="D" id="label"><span id="text3"></span></label>
+                </div>
+            </form>
+        </div>
+        <input id="submit" class="submit" type="submit" value="回答を送信する">
+    </div>
+
+    <script src="../scripts/jquery-3.4.1.min.js"></script>
+    <script>
+        "use strict"
+
+        //解答選択肢をobjオブジェクトに格納
+        let cnt = 0;
+        const obj = [{
+            0: "2022年11月21日",
+            1: "2023年7月28日",
+            2: "2024年5月7日",
+            3: "2025年10月14日"//正解
+        },
+        {
+            0: "QUIC",
+            1: "Tensor",
+            2: "BERT",
+            3: "FLoC"//正解
+        },
+        {
+            0: "Ajax",//正解
+            1: "CSS",
+            2: "RSS",
+            3: "JSON"
+        }];
+
+        console.log(obj.length);
+        console.log(obj[0][0]);
+
+        //質問欄をquTextオブジェクトに格納
+        const quText = [{
+            0: "【Q1】Windows 11発表、Windows 10はいつまで使える？",
+            1: "現行のWindows 10のサポート終了時期は、次のうちどれでしょう。",
+        },
+        {
+            0: "【Q2】グーグルが開発中のネット広告技術は？",
+            1: "米国の技術メディアが6月、米Google（グーグル）が開発中のネット広告技術を米Amazon.com（アマゾン・ドット・コム）が自社サイトでブロックしたと報じました。",
+        },
+        {
+            0: "【Q3】JavaScriptの非同期通信の機能を使うことによって，動的なユーザインタフェースを画面遷移を伴わずに実現する技術はどれか。",
+            1: "この技術によって、操作性の向上やパフォーマンスの向上の実現が容易になりました。",
+        }];
+
+        console.log(quText[1][0]);
+
+        //読み込んだ際に質問と選択肢を表示する
+        var p = 0;
+        window.onload = function () {
+            for (var i = 0; i < 4; i++) {
+                document.getElementById("text" + i).textContent = obj[0][i];
+            }
+
+            document.getElementById("title_msg").textContent = quText[p][0];
+            document.getElementById("sub_msg").textContent = quText[p][1];
+            p = p + 1;
+            cnt = cnt + 1;
+            console.log("cnt:" + cnt);
+        };
+
+        //チェックがない場合エラーを返す関数myCheck
+
+        let element = document.getElementsByName("quiz");
+        function myCheck() {
+            let noCheck = 0;
+            for (var i = 0; i < element.length; i++) {
+                if (element[i].checked === false) {
+                    noCheck = noCheck + 1;
+                }
+            }
+            if (noCheck === 4) {
+                alert("選択してください");
+                cnt = cnt - 1;
+                p = p - 1;
+            }
+        };
+
+
+        //選択欄の動的な内容変更と結果発表
+        document.getElementById("submit").addEventListener("click", function () {
+
+            myCheck();  //選択がなかった場合のエラー処理
+            console.log("myCheckの処理開始");
+
+            answer();
+            console.log("score:" + score);
+
+
+            //設問の長さがcntより大きい場合設問と解答を変換する。そうでない場合結果を表示する。
+            if (obj.length > cnt) {
+                for (var j = 0; j < 4; j++) {
+                    document.getElementById("text" + j).textContent = obj[cnt][j];
+                }
+                //設問欄の動的変換
+                console.log(p);
+                document.getElementById("title_msg").textContent = quText[p][0];
+                document.getElementById("sub_msg").textContent = quText[p][1];
+                p = p + 1;
+
+
+            } else if (obj.length <= cnt) {
+                document.getElementById("box").innerHTML =
+                    `<h1>結果発表!</h1>`;
+                document.getElementById("box").insertAdjacentHTML('beforeend', '<div id="resultBox"><span id = "result"></span></div>');
+                document.getElementById("result").textContent =
+                    "あなたの結果は" + score + "問正解です！";
+            }
+            cnt = cnt + 1;
+            console.log("cnt:" + cnt);
+        });
+
+
+        //チェックボックスのチェックをsubmit押下の度にクリアする
+        const el = document.getElementsByClassName("check");    //チェックを外すために要素を取得
+        const uncheckAll = () => {
+            for (let i = 0; i < el.length; i++) {
+                el[i].checked = false;
+            }
+        };
+
+        submit.addEventListener("click", uncheckAll, false);
+
+
+        //回答の正解不正解のアルゴリズム
+
+
+        let score = 0;  //回答結果を取得し、変数に格納する
+        const answer = function () {
+            if (element[3].checked && cnt === 1) {
+                score = score + 1;
+                return score;
+            } else if (element[3].checked && cnt === 2) {
+                score = score + 1;
+                return score;
+            } else if (element[0].checked && cnt === 3) {
+                score = score + 1;
+                return score;
+            }
+        }
+
+
+
+
+
+    </script>
+</body>
+
+</html>
